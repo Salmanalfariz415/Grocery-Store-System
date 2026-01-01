@@ -5,41 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product List</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="../static/script.js"></script>
+  <script src="../static/script.js" defer></script>
   
 </head>
 
 <body class="bg-gray-40">
-    <button id="Add_Product" class="absolute top-10 right-5 w-[7rem] h-[3rem]
+    <button id="Add_Product" class="absolute top-10 right-5 w-[7rem] min-h-8
                                  border border-gray-500 flex 
                                  justify-center items-center
                                  rounded-md shadow-lg
-                                 font-mono">Add Product</button>
+                                 font-sans bg-blue-500 text-white">Add Product</button>
 
   <div class="relative bg-white max-w-6xl mx-auto p-4 mt-20 border-2 border-gray-100 rounded-xl shadow-lg">
 
-    <h1 class="text-2xl font-bold text-center mb-6">Product List</h1>
+    <h1 class="text-2xl font-bold  mb-6">Manage Products</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-0.5 min-h-[30rem] " id="table">
+        <table class="w-full border">
+          <thead>
+            <th class="border border-gray-200">Name</th>
+            <th class="border border-gray-200 min-w-24">Unit</th>
+            <th class="border border-gray-200 ">Price per Unit</th> 
+            <th class="border border-gray-200">Action</th>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td class="border p-2" contenteditable="true">New Product</td>
+              <td class="border p-2" contenteditable="true">0</td>
+              <td class="border p-2" contenteditable="true">0</td>
+              <td class="border flex justify-center items-center p-2 ">
+                <button class="bg-red-500 text-white px-4 py-1 rounded delete-btn">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div class="font-serif flex items-center justify-center border-2 border-gray-100 row-span-1 max-h-[2.5rem]">
-        Product Name
-      </div>
-
-      <div class="font-serif flex items-center justify-center border-2 border-gray-100 row-span-1 max-h-[2.5rem]">
-        Category
-      </div>
-
-      <div class="font-serif flex items-center justify-center border-2 border-gray-100 row-span-1 max-h-[2.5rem]">
-        Price
-      </div>
-
-      <div class="font-serif flex items-center justify-center border-2 border-gray-100 row-span-1 max-h-[2.5rem]">
-        Stock
-      </div>
 
     </div>
-  </div>
 
 </body>
 </html>
