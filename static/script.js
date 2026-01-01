@@ -28,25 +28,31 @@ table.addEventListener("click", function (e) {
     
     // Check if it's the first row
     if (row === table.firstElementChild) {
-      // Reset the first row
       row.innerHTML = `
         <td class="border-2 p-2" contenteditable="true">New Product</td>
         <td class="border-2 p-2" contenteditable="true">0</td>
         <td class="border-2 p-2" contenteditable="true">0</td>
-        <td class="border-2 flex justify-center items-center p-2">
+        <td class="border-2 p-2 flex justify-center items-center">
           <button class="bg-red-500 text-white px-4 py-1 rounded delete-btn">
             Delete
           </button>
         </td>
       `;
     } else {
-      // Delete other rows
       row.remove();
     }
   }
  });
-// The key change is checking if (row === table.firstElementChild) to determine if it's the first row, then either resetting it or deleting it accordingly. This way:
 
-// First row: Clicking Delete resets the content back to defaults
-// Other rows: Clicking Delete removes them completely
-// Claude is AI and can make mistakes. Please double-check responses.
+async function addProduct(name, unit, price) {
+  const response = await fetch("http://127.0.0.1:5500/templates/products.html", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, unit, price })
+  });
+
+  const data = await response.json();
+  console.log(data);
+}
