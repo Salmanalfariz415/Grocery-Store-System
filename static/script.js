@@ -1,9 +1,22 @@
 const add = document.getElementById('Add_Product');
 const save = document.getElementById('Save_Products');
 const table = document.getElementById('tableBody');
+const panel = document.getElementById("hidden_panel");
+const overlay = document.getElementById("overlay");
+const closeBtn = document.getElementById("closeBtn");
 
-add.addEventListener('click', function () {
-  addRow();
+// add.addEventListener('click', function () {
+//   addRow();  
+// });
+add.addEventListener("click", (e) => {
+  e.stopPropagation(); // 🔥 IMPORTANT
+  panel.style.display = "block";
+  overlay.style.display = "block";
+});
+
+closeBtn.addEventListener("click", () => {
+  panel.style.display = "none";
+  overlay.style.display = "none";
 });
 
 function addRow() {
