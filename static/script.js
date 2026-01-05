@@ -23,8 +23,10 @@ function addRow() {
   table.appendChild(row);
 }
 
-async function addProduct(name, uom_id, price) {
+async function addProduct(name, unit, price) {  // Changed parameter name
   try {
+    console.log("Sending:", { name, unit, price });
+    
     const response = await fetch("http://127.0.0.1:5000/api/products", {
       method: "POST",
       headers: {
@@ -32,23 +34,26 @@ async function addProduct(name, uom_id, price) {
       },
       body: JSON.stringify({ 
         name: name,
-        uom_id: uom_id, 
-        price: price 
+        unit: unit,  // Changed from uom_id
+        price: parseFloat(price)
       })
     });
 
+    const data = await response.json();
+    
     if (!response.ok) {
-      throw new Error('Failed to add product');
+      console.error('Server error:', data);
+      throw new Error(data.error || 'Failed to add product');
     }
 
-    const data = await response.json();
-    console.log(data);
+    console.log('Success:', data);
+    alert('Product added successfully!');
     return data;
   } catch (error) {
     console.error('Error:', error);
+    alert('Error adding product: ' + error.message);
   }
 }
-
 
 table.addEventListener("click", function (e) {
   if (e.target.classList.contains("delete-btn")) {
