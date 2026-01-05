@@ -4,6 +4,7 @@ const table = document.getElementById('tableBody');
 const panel = document.getElementById("hidden_panel");
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
+const submitBtn = document.getElementById("submitBtn");
 
 // add.addEventListener('click', function () {
 //   addRow();  
@@ -19,13 +20,25 @@ closeBtn.addEventListener("click", () => {
   overlay.style.display = "none";
 });
 
-function addRow() {
+submitBtn.addEventListener("click", () => {
+  panel.style.display = "none";
+  overlay.style.display = "none";
+  addRow( 
+    document.getElementById("product_name").value,
+    document.getElementById("uom").value,
+    document.getElementById("product_price").value
+  );  
+});
+
+
+// Function to add a new row to the table
+const addRow = (name, uom, price) => {
   const row = document.createElement("tr");
 
   row.innerHTML = `
-    <td class="border p-2" contenteditable="true">New Product</td>
-    <td class="border p-2" contenteditable="true">0</td>
-    <td class="border p-2" contenteditable="true">0</td>
+    <td class="border p-2">${name}</td>
+    <td class="border p-2">${uom}</td>
+    <td class="border p-2">${price}</td>
     <td class="border p-2 flex justify-center items-center">
       <button class="bg-red-500 text-white px-4 py-1 rounded delete-btn">
         Delete
@@ -34,9 +47,10 @@ function addRow() {
   `;
 
   table.appendChild(row);
-}
+};
 
-async function addProduct(name, unit, price) {  // Changed parameter name
+
+async function addProduct(name, unit, price) { 
   try {
     console.log("Sending:", { name, unit, price });
     
