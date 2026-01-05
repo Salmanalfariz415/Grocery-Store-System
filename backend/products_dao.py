@@ -18,8 +18,8 @@ def insert_new_product(connection, product):
     
     uom_id = result[0]
     
-    query = "INSERT INTO products (Name, Uom_id, Price_per_unit) VALUES (%s, %s, %s)"
-    values = (product['name'], uom_id, product['price'])
+    query = "INSERT INTO products (Name, Uom_id, Price_per_unit,Uom_name) VALUES (%s, %s, %s,%s)"
+    values = (product['name'], uom_id, product['price'], product['unit_name'])
     
     cursor.execute(query, values)
     connection.commit()

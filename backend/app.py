@@ -29,7 +29,7 @@ def add_product():
         print("Received data:", data)
 
         name = data.get('name', '').strip()
-        unit_name = data.get('unit', '').strip()  # Changed from uom_id to unit
+        unit_name = data.get('unit', '').strip()  
         price = data.get('price', 0)
 
         print(f"Parsed - name: {name}, unit: {unit_name}, price: {price}")
@@ -48,7 +48,7 @@ def add_product():
 
         product = {
             'name': name,
-            'unit_name': unit_name,  # Changed
+            'unit_name': unit_name,  
             'price': price_float
         }
 

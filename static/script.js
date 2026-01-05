@@ -61,7 +61,7 @@ async function addProduct(name, unit, price) {
       },
       body: JSON.stringify({ 
         name: name,
-        unit: unit,  // Changed from uom_id
+        unit: unit,  
         price: parseFloat(price)
       })
     });
@@ -104,16 +104,17 @@ table.addEventListener("click", function (e) {
   }
  });
 
-save.addEventListener('click', function () {
-  const rows = table.querySelectorAll('tr');
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('td');
-    const name = cells[0].innerText;
-    const unit = cells[1].innerText;
-    const price = cells[2].innerText;
-    addProduct(name, unit, price);
-  });
+save.addEventListener('click', function () { 
+  const rows = table.querySelectorAll('tr'); 
+  rows.forEach(row => { 
+  const cells = row.querySelectorAll('td');
+  if (cells.length === 0) return; 
+  const name = cells[0].innerText; 
+  const unit = cells[1].innerText; 
+  const price = cells[2].innerText; 
+  addProduct(name, unit, price); }); 
 });
+
 
 
 
