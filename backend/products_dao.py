@@ -26,3 +26,15 @@ def insert_new_product(connection, product):
     cursor.close()
     
     return cursor.lastrowid
+
+
+def delete_product_by_id(connection, product_id):
+    cursor = connection.cursor()
+    try:
+        query = "DELETE FROM products WHERE Product_id=%s"
+        cursor.execute(query, (product_id,))
+        connection.commit()
+        rows_affected = cursor.rowcount
+        return rows_affected
+    finally:
+        cursor.close()

@@ -19,6 +19,9 @@ def get_uoms():
         print(str(e))
         print(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
 
 @app.route('/api/products', methods=['POST'])
 def add_product():
@@ -57,16 +60,47 @@ def add_product():
         print(f"Product inserted with ID: {product_id}")
         
         return jsonify({
-            "message": "Product added successfully",
-            "product_id": product_id
-        }), 200
+            "id": product_id,
+            "name": name,
+            "unit": unit_name,
+            "price": price_float
+        }), 201
+
 
     except Exception as e:
         print("=== ERROR ===")
         print(str(e))
         print(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+@app.route('/api/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    connection = None
+    try:
+        connection = get_sql_connection()
+        rows_affected = products_dao.delete_product_by_id(connection, product_id)
+        
+        if rows_affected == 0:
+            return jsonify({"error": "Product not found"}), 404
+            
+        return jsonify({
+            "message": "Product deleted successfully",
+            "product_id": product_id
+        }), 200
+        
+    except Exception as e:
+        print("=== ERROR in delete_product ===")
+        print(str(e))
+        print(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
     
+
 if __name__ == "__main__":
     print("Starting Flask server...")
     app.run(debug=True, port=5000)

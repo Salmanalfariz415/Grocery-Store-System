@@ -5,40 +5,61 @@ const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
 const submitBtn = document.getElementById("submitBtn");
 
-// add.addEventListener('click', function () {
-//   addRow();  
-// });
+
 add.addEventListener("click", (e) => {
   e.stopPropagation(); // 🔥 IMPORTANT
   panel.style.display = "block";
   overlay.style.display = "block";
 });
 
+
 closeBtn.addEventListener("click", () => {
   panel.style.display = "none";
   overlay.style.display = "none";
 });
 
-submitBtn.addEventListener("click", () => {
-  panel.style.display = "none";
-  overlay.style.display = "none";
-  addRow( 
-    document.getElementById("product_name").value,
-    document.getElementById("uom").value,
-    document.getElementById("product_price").value
-  );
-  addProduct( 
-    document.getElementById("product_name").value,
-    document.getElementById("uom").value,
-    document.getElementById("product_price").value
-  );  
+
+submitBtn.addEventListener("click", async () => {
+  const name = document.getElementById("product_name").value;
+  const uom = document.getElementById("uom").value;
+  const price = document.getElementById("product_price").value;
+
+  try {
+    // 1️⃣ call backend FIRST
+    const product = await addProduct(name, uom, price);
+
+    if (!product) return; // safety
+
+    // 2️⃣ update UI with REAL data from DB...that includes the new product ID
+    addRow(product.id, product.name, product.uom, product.price);
+
+    // 3️⃣ close panel only on success
+    panel.style.display = "none";
+    overlay.style.display = "none";
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to add product");
+  }
 });
 
 
-// Function to add a new row to the table
-const addRow = (name, uom, price) => {
-  const row = document.createElement("tr");
+// Event delegation for delete buttons
+table.addEventListener("click", function (e) {
+  if (e.target.classList.contains("delete-btn")) {
+    const row = e.target.closest("tr");
+    row.remove();
+    deleteProduct(row.dataset.productId);
+  }
+  
+ });
 
+
+// Function to add a new row to the table
+const addRow = (productId,name, uom, price) => {
+  const row = document.createElement("tr");
+  // Store product ID in a data attribute..DOM way
+  row.dataset.productId = productId;
   row.innerHTML = `
     <td class="border p-2">${name}</td>
     <td class="border p-2">${uom}</td>
@@ -54,6 +75,7 @@ const addRow = (name, uom, price) => {
 };
 
 
+// Function to send product data to the backend
 async function addProduct(name, unit, price) { 
   try {
     console.log("Sending:", { name, unit, price });
@@ -86,14 +108,30 @@ async function addProduct(name, unit, price) {
   }
 }
 
-
-
-table.addEventListener("click", function (e) {
-  if (e.target.classList.contains("delete-btn")) {
-    const row = e.target.closest("tr");
-    row.remove();
+// Function to delete a product by ID
+async function deleteProduct(productId){
+  try{
+    console.log("Deleting product with ID:", productId);
+    //delete doesnt use body...it uses URL parameters
+    const response=await fetch(`http://127.0.0.1:5000/api/products/${productId}`,{
+      method:"DELETE",
+    });
+    const data=await response.json();
+    if(!response.ok){
+      throw new Error("Failed to delete product");
+    }
+    console.log("Success:",data);
+    alert("Product deleted successfully!");
+    
   }
- });
+  catch(error){
+    console.error('Error:', error);
+    alert('Error deleting product: ' + error.message);
+
+  }
+}
+
+
 
 
 
