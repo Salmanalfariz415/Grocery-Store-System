@@ -38,3 +38,23 @@ def delete_product_by_id(connection, product_id):
         return rows_affected
     finally:
         cursor.close()
+
+def get_all_products(connection):
+    cursor=connection.cursor()
+    try:
+        cursor.execute("SELECT Product_id, Name, Uom_name, Price_per_unit FROM products")
+        products=cursor.fetchall()  
+        cursor.close()
+        product_list=[]
+        for p in products:
+            product={
+                "id":p[0],
+                "name":p[1],
+                "unit":p[2],
+                "price":float(p[3])
+            }
+            product_list.append(product)
+        return product_list
+    finally:
+        cursor.close()
+    

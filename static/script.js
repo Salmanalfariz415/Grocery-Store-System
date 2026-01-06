@@ -5,6 +5,9 @@ const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
 const submitBtn = document.getElementById("submitBtn");
 
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+});
 
 add.addEventListener("click", (e) => {
   e.stopPropagation(); // 🔥 IMPORTANT
@@ -131,7 +134,21 @@ async function deleteProduct(productId){
   }
 }
 
-
+async function loadProducts(){
+  try{
+    const res=await fetch("http://127.0.0.1:5000/api/products");
+    const data=await res.json();
+    if(!res.ok){
+      throw new Error("Failed to load products");
+    }
+    data.forEach(product=>{
+      addRow(product.id, product.name, product.unit, product.price);
+    });
+  }catch(error){
+    console.error('Error:', error);
+    alert('Error loading products: ' + error.message);
+  }
+}
 
 
 

@@ -23,6 +23,24 @@ def get_uoms():
         if connection:
             connection.close()
 
+
+@app.route('/api/products', methods=['GET'])
+def get_products():
+    try:
+        connection= get_sql_connection()
+        products=products_dao.get_all_products(connection)
+        print("Products fetched:", products)
+        return jsonify(products)
+    except Exception as e:
+        print("=== ERROR in get_products ===")
+        print(str(e))
+        print(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+
 @app.route('/api/products', methods=['POST'])
 def add_product():
     try:
