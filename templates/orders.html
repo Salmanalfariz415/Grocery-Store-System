@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Orders</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../static/js/orders.js" defer></script>
 </head>
-<body class="h-screen bg-gray-300 flex flex-col justify-start items-center gap-2">
+<body class="bg-gray-300 flex flex-col justify-start items-center gap-2">
     <div class="w-[50rem] h-[6rem] bg-white mb-3 mt-4 grid grid-cols-4 grid-rows-3">
         <div class="col-span-1 row-span-1 flex justify-start items-center mt-6 mb-4 mx-4 text-lg text-gray-700">New Order</div>
         <div></div>
         <div></div>
         <div class="col-span-1 row-span-1 flex justify-end items-center mt-4">
-            <input type="text" placeholder="Customer Name" class="
+            <input id="customer_name" type="text" placeholder="Customer Name" class="
                             justify-center items-center border border-gray-400 h-8 w-48
                             font-sans bg-gray-200 text-black px-2 py-2 mx-2 text-sm"></input>
         </div>
@@ -23,11 +22,12 @@
         <div class="col-span-1 row-span-1 flex justify-center items-center mb-3 text-sm font-bold text-gray-700">Quantity</div>
         <div class="col-span-1 row-span-1 flex justify-between items-center mb-3 px-2">
             <div class="w-10 flex justify-center items-center text-sm font-bold text-gray-700">Total</div>
-            <button class="w-20 h-7 flex justify-center items-center text-sm border border-gray-400 bg-blue-500 text-white">Add More</button>
+            <button id="add_more_btn" class="w-20 h-7 flex justify-center items-center text-sm border border-gray-400 bg-blue-500 text-white">Add More</button>
         </div>
 
     </div>
-    <div id="container" class="mb-4 grid grid-cols-4 grid-rows-1 w-[50rem] h-[6rem] bg-white py-3">
+    <div id="container">
+        <div class="mb-4 grid grid-cols-4 grid-rows-1 w-[50rem] bg-white py-3 h-24">
         <select id="category" class="h-8 col-span-1 px-3 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="">Select category</option>
             <option value="milk">Milk</option>
@@ -43,6 +43,8 @@
             </div>
         </div>
     </div>
+    </div>
+    
     <div class="w-[50rem] h-[6rem] bg-white grid grid-cols-1 grid-rows-2">
         <div class="col-span-1 row-span-1 flex justify-end items-center mt-2">
             <h1 class="font-bold text-sm mx-2">Total</h1>
@@ -54,6 +56,7 @@
             <button class="w-28 h-8 flex justify-center items-center text-sm border border-gray-400 bg-green-500 font-bold text-white mt-2 ml-2">Submit Order</button>
         </div>
     </div>
-
+    
+    <script src="../static/js/orders.js" defer></script>
 </body>
 </html>
