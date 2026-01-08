@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from sql_connection import get_sql_connection
 import products_dao
+import orders_dao
 import traceback
 
 app = Flask(__name__)
