@@ -124,7 +124,7 @@ async function deleteProduct(productId){
       throw new Error("Failed to delete product");
     }
     console.log("Success:",data);
-    alert("Product deleted successfully!");
+  
     
   }
   catch(error){
