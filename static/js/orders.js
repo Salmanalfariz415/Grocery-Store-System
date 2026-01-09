@@ -2,7 +2,8 @@ const customer_name=document.getElementById('customer_name');
 const add_more_btn=document.getElementById('add_more_btn');
 const container=document.getElementById('container');
 const category=document.getElementsByClassName('category');
-
+const price=document.getElementById('price');
+const total_price=document.getElementById('total_price');
 //this is to cache products...so that we don't have to fetch from backend every time
 let productsCache = [];
 
@@ -21,8 +22,8 @@ add_more_btn.addEventListener("click",()=>{
         <select placeholder="Select Product" class="category h-8 col-span-1 px-3 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         <option value="" disabled selected>Select Product</option>
         </select>
-        <input type="text" class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
-        <input type="number" min="1" value="1" class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center"></input>
+        <input type="text" readonly class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
+        <input type="number" min="1" value="1" readonly class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center"></input>
         <div class="grid grid-rows-2 gap-4">
             <input type="text" readonly class="row-span-1 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
             <div class="row-span-1 flex justify-end items-center">
@@ -71,3 +72,31 @@ const addDropdown=(orderName,orderId,category1)=>{
         option.textContent=orderName;
         category1.appendChild(option);
 }
+
+//now moving onto calculating total price and other prices based on quantity
+
+async function calculatePrices(productId){
+    try{
+        const res=await fetch(`http://127.0.0.1:5000/api/orders/${productId}`,{
+        method:"GET"});
+        const data=await res.json();
+        return data;
+    }catch(err) {
+        console.error("Error fetching price:", err);
+        return { price: 0 };
+    }   
+    
+}
+
+container.addEventListener("change",async(event)=>{
+     if (event.target.classList.contains("category")) {
+        const productId = event.target.value;
+        
+        const data = await calculatePrices(productId);
+                
+        // The next sibling IS the price input
+        const priceInput = event.target.nextElementSibling;
+        priceInput.value = `₹ ${data.price}`;
+    }
+    
+});

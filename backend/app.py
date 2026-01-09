@@ -133,6 +133,18 @@ def get_orders():
         if connection:
             connection.close()
 
+@app.route('/api/orders/<int:productId>', methods=['GET'])
+def get_price(productId):
+    try:
+        connection=get_sql_connection()
+        return jsonify(orders_dao.get_prices(connection,productId))
+
+    except Exception as e:
+        print("=== ERROR in get_prices ===")
+    finally:
+        if connection:
+            connection.close()
+
 if __name__ == "__main__":
     print("Starting Flask server...")
     app.run(debug=True, port=5000)

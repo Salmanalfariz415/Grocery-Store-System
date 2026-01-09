@@ -14,3 +14,16 @@ def product_dropdown(connection):
         return product_list
     finally:
         cursor.close()  
+
+def get_prices(connection,productId):
+    cursor=connection.cursor()
+    try:
+        query="SELECT Price_per_unit FROM products WHERE Product_id=%s"
+        values=(productId,)
+        cursor.execute(query,values)
+        price=cursor.fetchone()
+        if price:
+            return {"price": price[0]}
+        return {"price": 0}
+    finally:
+        cursor.close()
