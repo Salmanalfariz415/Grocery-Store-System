@@ -118,8 +118,22 @@ def delete_product(product_id):
     finally:
         if connection:
             connection.close()
-    
+
+
+@app.route('/api/orders',methods=['GET'])
+def get_orders():
+    try:
+        connection=get_sql_connection()
+        orders=orders_dao.product_dropdown(connection)
+        print("Orders fetched:", orders)
+        return jsonify(orders)     
+    except Exception:
+        print("=== ERROR in get_orders ===")
+    finally:    
+        if connection:
+            connection.close()
 
 if __name__ == "__main__":
     print("Starting Flask server...")
     app.run(debug=True, port=5000)
+
