@@ -5,6 +5,7 @@ const category=document.getElementsByClassName('category');
 const price=document.getElementById('price');
 const total_price=document.getElementById('total_price');
 const quantity=document.getElementById('quantity');
+const total_order=document.getElementById('total_order');
 //this is to cache products...so that we don't have to fetch from backend every time
 let productsCache = [];
 
@@ -12,6 +13,7 @@ let productsCache = [];
 // Loads drop-down products on page load
 document.addEventListener("DOMContentLoaded",()=>{
     fetchProducts();
+    updateTotalOrderPrice();
 });
 
 
@@ -26,7 +28,7 @@ add_more_btn.addEventListener("click",()=>{
         <input type="text" readonly class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
         <input type="number" id="quantity" min="1" value="1" class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center"></input>
         <div class="grid grid-rows-2 gap-4">
-            <input type="text" readonly class="row-span-1 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
+            <input type="text" id="total_price" readonly class="row-span-1 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
             <div class="row-span-1 flex justify-end items-center">
                 <button class="w-20 h-7 flex justify-center items-center text-sm border border-gray-400 bg-red-500 text-white mt-1 mx-4">Remove</button>
             </div>
@@ -98,14 +100,15 @@ container.addEventListener("change",async(event)=>{
         // The next sibling IS the price input
         const priceInput = event.target.nextElementSibling;
         priceInput.value = `₹ ${data.price}`;//Setting price value
-        
+
         const quantityInput = priceInput.nextElementSibling; // This is the quantity input
         const totalDiv = quantityInput.nextElementSibling;
         const totalPriceInput = totalDiv.querySelector('input'); //This is the total price input inside the div
         const quantityInt=parseInt(quantityInput.value);//This is for converting quantity to integer
 
         let total = data.price * quantityInt;
-        totalPriceInput.value = `₹ ${total.toFixed(2)}`;//Setting total price value
+        totalPriceInput.value = `₹ ${total.toFixed(2)}`;
+        updateTotalOrderPrice();
     }
     if(event.target.id==="quantity"){
         const quantityInput = event.target;
@@ -116,6 +119,19 @@ container.addEventListener("change",async(event)=>{
         const quantityInt=parseInt(quantityInput.value);//This is for converting quantity to integer
         let total = priceInput.replace('₹ ', '') * quantityInt;
         totalPriceInput.value = `₹ ${total.toFixed(2)}`;
+        updateTotalOrderPrice();
     }
-        
 });
+
+const updateTotalOrderPrice = () => {
+    let totalOrderPrice = 0;
+    const totalPriceInputs = container.querySelectorAll('input[type="text"][id="total_price"][readonly]');
+    totalPriceInputs.forEach(input => {
+        const priceText = input.value.replace('₹', '').trim();
+        const price = parseFloat(priceText);
+        if (!isNaN(price)) {
+            totalOrderPrice += price;
+        }
+    });
+    total_order.value = `₹ ${totalOrderPrice.toFixed(2)}`;
+}
