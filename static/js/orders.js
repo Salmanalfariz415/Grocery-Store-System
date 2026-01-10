@@ -6,9 +6,9 @@ const price=document.getElementById('price');
 const total_price=document.getElementById('total_price');
 const quantity=document.getElementById('quantity');
 const total_order=document.getElementById('total_order');
+const submit=document.getElementById('submit');
 //this is to cache products...so that we don't have to fetch from backend every time
 let productsCache = [];
-
 
 // Loads drop-down products on page load
 document.addEventListener("DOMContentLoaded",()=>{
@@ -51,6 +51,10 @@ async function fetchProducts(){
         const res=await fetch("http://127.0.0.1:5000/api/orders",{
             method:"GET",
         })
+        
+        if(!res.ok){
+            throw new Error("Not implemented yet");
+        }
         //now from script it has to go to app.py which will take functions from orders_dao.py to fetch data from DB and return it here
         const data=await res.json();
         productsCache = data;
@@ -61,7 +65,6 @@ async function fetchProducts(){
             addDropdown(order.name,order.id,category1);});
         }
         
-        throw new Error("Not implemented yet");
     }
     catch(err){
         console.error(err);
@@ -135,3 +138,36 @@ const updateTotalOrderPrice = () => {
     });
     total_order.value = `₹ ${totalOrderPrice.toFixed(2)}`;
 }
+
+async function addOrder(name,total){
+    try{
+        const res = await fetch(`http://127.0.0.1:5000/api/orders`,{
+            method:"POST",
+            body:JSON.stringify({
+                name:name,
+                total:total,
+            }),
+            headers:{
+                "Content-Type": "application/json"
+            }
+        }
+        );
+        if(!res.ok){
+            throw new Error ("Error in ordering");
+        }
+        const data=await res.json();
+        return data;
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+submit.addEventListener("click",async()=>{
+    const name=customer_name.value;
+    const total=total_order.value.replace('₹','').trim();
+    const orderData=await addOrder(name,total);
+    if(orderData){
+        alert("Order placed successfully!");
+        window.location.reload();
+    }
+});

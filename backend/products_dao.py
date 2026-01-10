@@ -57,4 +57,4 @@ def get_all_products(connection):
         return product_list
     finally:
         cursor.close()
-    
+        

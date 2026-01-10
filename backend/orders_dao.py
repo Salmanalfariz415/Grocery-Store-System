@@ -27,3 +27,14 @@ def get_prices(connection,productId):
         return {"price": 0}
     finally:
         cursor.close()
+
+def post_orders(connection,orders):
+    cursor=connection.cursor()
+    try:
+        query="INSERT INTO orders (customer_name,total,datetime) VALUES (%s,%s,%s)"
+        values=(orders['name'],orders['total'],orders['date'],)
+        cursor.execute(query,values)    
+        connection.commit()
+        return cursor.lastrowid
+    finally:
+        cursor.close()

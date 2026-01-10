@@ -4,6 +4,7 @@ from sql_connection import get_sql_connection
 import products_dao
 import orders_dao
 import traceback
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -141,6 +142,29 @@ def get_price(productId):
 
     except Exception as e:
         print("=== ERROR in get_prices ===")
+    finally:
+        if connection:
+            connection.close()
+
+
+
+@app.route('/api/orders', methods=['POST', 'OPTIONS'])
+def post_orders():
+    try:
+        connection = get_sql_connection()
+        data = request.json
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S') # The datatype of date in the database is DATETIME
+        orders = {
+            'name': data['name'],
+            'total': data['total'],
+            'date': now
+        }
+
+        orderId = orders_dao.post_orders(connection, orders)
+        return jsonify({"order_id": orderId}), 201
+    
+    except Exception as e:
+        return jsonify({"error": "Failed to create order"}), 500
     finally:
         if connection:
             connection.close()
