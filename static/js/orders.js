@@ -3,8 +3,8 @@ const add_more_btn=document.getElementById('add_more_btn');
 const container=document.getElementById('container');
 const category=document.getElementsByClassName('category');
 const price=document.getElementById('price');
-const total_price=document.getElementById('total_price');
-const quantity=document.getElementById('quantity');
+const total_price=document.getElementsByClassName('total_price');
+const quantity=document.getElementsByClassName('quantity');
 const total_order=document.getElementById('total_order');
 const submit=document.getElementById('submit');
 //this is to cache products...so that we don't have to fetch from backend every time
@@ -21,14 +21,14 @@ document.addEventListener("DOMContentLoaded",()=>{
 add_more_btn.addEventListener("click",()=>{
     //insertAdjacentHTML is used to insert HTML code into a specified position in the DOM without overwriting existing content.(Better than innerHTML)
     container.insertAdjacentHTML("beforeend",`
-        <div class="mb-4 grid grid-cols-4 grid-rows-1 w-[50rem] bg-white py-3 ">
-        <select placeholder="Select Product" class="category h-8 col-span-1 px-3 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="" disabled selected>Select Product</option>
+        <div class="product-row mb-4 grid grid-cols-4 grid-rows-1 w-[50rem] bg-white py-3 h-24">
+        <select class="category h-8 col-span-1 px-3 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="" disabled selected>Select Product</option>
         </select>
-        <input type="text" readonly class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
-        <input type="number" id="quantity" min="1" value="1" class="h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center"></input>
+        <input type="text" readonly class="price h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
+        <input type="number" min="1" value="1" class="quantity h-8 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center"></input>
         <div class="grid grid-rows-2 gap-4">
-            <input type="text" id="total_price" readonly class="row-span-1 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
+            <input type="text" readonly class="total_price row-span-1 col-span-1 mx-auto flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 w-32 text-center" placeholder="₹ 0.00"></input>
             <div class="row-span-1 flex justify-end items-center">
                 <button class="w-20 h-7 flex justify-center items-center text-sm border border-gray-400 bg-red-500 text-white mt-1 mx-4">Remove</button>
             </div>
@@ -113,7 +113,7 @@ container.addEventListener("change",async(event)=>{
         totalPriceInput.value = `₹ ${total.toFixed(2)}`;
         updateTotalOrderPrice();
     }
-    if(event.target.id==="quantity"){
+    if(event.target.classList.contains("quantity")){
         const quantityInput = event.target;
         const totalDiv = quantityInput.nextElementSibling; 
         const totalPriceInput = totalDiv.querySelector('input'); 
@@ -128,7 +128,7 @@ container.addEventListener("change",async(event)=>{
 
 const updateTotalOrderPrice = () => {
     let totalOrderPrice = 0;
-    const totalPriceInputs = container.querySelectorAll('input[type="text"][id="total_price"][readonly]');
+    const totalPriceInputs = container.querySelectorAll('.total_price');
     totalPriceInputs.forEach(input => {
         const priceText = input.value.replace('₹', '').trim();
         const price = parseFloat(priceText);
@@ -162,12 +162,74 @@ async function addOrder(name,total){
         console.log(err);
     }
 }
-submit.addEventListener("click",async()=>{
-    const name=customer_name.value;
-    const total=total_order.value.replace('₹','').trim();
-    const orderData=await addOrder(name,total);
-    if(orderData){
-        alert("Order placed successfully!");
-        window.location.reload();
+
+
+
+async function addOrderDetails(orderId, productId, quantity, totalPrice) {
+    try {
+        const res = await fetch(`http://127.0.0.1:5000/api/order_details`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                product_id: productId,
+                quantity: quantity,
+                total_price: totalPrice
+            })
+        });
+        if (!res.ok) {
+            throw new Error("Error adding order details");
+        }       
+        const data = await res.json();
+        return data;      
+    } catch(err) {
+        console.error(err);
     }
+}
+
+submit.addEventListener("click", async() => {
+    const name = customer_name.value;
+    const total = total_order.value.replace('₹', '').trim();
+    
+    // Validate inputs
+    if (!name || !total || total === '0.00') {
+        alert("Please enter customer name and add products");
+        return;
+    }
+    
+    // Create the main order first
+    const orderData = await addOrder(name, total);
+    
+    if (!orderData || !orderData.order_id) {
+        alert("Failed to create order");
+        return;
+    }
+    
+    // Get all product rows inside container
+    const productRows = container.querySelectorAll('.product-row');
+    console.log("Total rows found:", productRows.length); // Debug
+    
+    // Loop through each row and add order details
+    for (let row of productRows) {
+        const categorySelect = row.querySelector('.category');
+        const quantityInput = row.querySelector('.quantity');
+        const totalPriceInput = row.querySelector('.total_price');
+        
+        const productID = categorySelect.value;
+        const quantity = quantityInput.value;
+        const totalPrice = totalPriceInput.value.replace('₹', '').trim();
+
+        console.log("Row data:", {productID, quantity, totalPrice});
+        
+        // Only add if a product is selected
+        if (productID) {
+            const result =await addOrderDetails(orderData.order_id, productID, quantity, totalPrice);
+            console.log("Insert result:", result);
+        }
+    }
+    
+    alert("Order placed successfully!");
+    window.location.reload();
 });

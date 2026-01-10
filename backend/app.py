@@ -49,13 +49,10 @@ def add_product():
         print("=== POST /api/products called ===")
         connection = get_sql_connection()
         data = request.json
-        print("Received data:", data)
 
         name = data.get('name', '').strip()
         unit_name = data.get('unit', '').strip()  
         price = data.get('price', 0)
-
-        print(f"Parsed - name: {name}, unit: {unit_name}, price: {price}")
 
         if not name or name == 'New Product':
             return jsonify({"error": "Product name is required"}), 400
@@ -168,6 +165,28 @@ def post_orders():
     finally:
         if connection:
             connection.close()
+
+@app.route('/api/order_details',methods=['POST'])
+def post_order_details():
+    try:
+        connection=get_sql_connection()
+        data=request.json
+        order_details={
+            'order_id':data['order_id'],
+            'product_id':data['product_id'],
+            'quantity':data['quantity'],
+            'total_price':data['total_price']
+        }
+        orderId=orders_dao.post_order_details(connection,order_details)
+        return jsonify({"orderid":orderId}),201
+    
+    except Exception as e:
+        print("=== ERROR in get_prices ===")
+    finally:
+        if connection:
+            connection.close()
+
+
 
 if __name__ == "__main__":
     print("Starting Flask server...")

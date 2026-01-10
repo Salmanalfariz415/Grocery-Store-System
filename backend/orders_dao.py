@@ -38,3 +38,14 @@ def post_orders(connection,orders):
         return cursor.lastrowid
     finally:
         cursor.close()
+
+def post_order_details(connection,orders):
+    cursor=connection.cursor()
+    try:
+        query="INSERT INTO order_details (order_id,product_id,quantity,total_price) VALUES (%s,%s,%s,%s)"
+        values=(orders['order_id'],orders['product_id'],orders['quantity'],orders['total_price'])
+        cursor.execute(query,values)
+        connection.commit()
+        return cursor.lastrowid
+    finally:
+        cursor.close()
