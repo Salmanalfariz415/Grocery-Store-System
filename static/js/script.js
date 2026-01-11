@@ -4,10 +4,22 @@ const panel = document.getElementById("hidden_panel");
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
 const submitBtn = document.getElementById("submitBtn");
+const listOrderBtn=document.querySelector("#listOrderBtn");
+const addNewOrderBtn=document.querySelector("#addNewOrderBtn");
 
 document.addEventListener("DOMContentLoaded", () => {
   loadProducts();
 });
+
+listOrderBtn.addEventListener("click",async()=>{
+    window.location.href="http://127.0.0.1:5500/templates/list_orders.html";
+});
+
+
+addNewOrderBtn.addEventListener("click", async() => {
+    window.location.href = "http://127.0.0.1:5500/templates/add_order.html";
+});
+
 
 add.addEventListener("click", (e) => {
   e.stopPropagation(); // 🔥 IMPORTANT

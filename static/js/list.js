@@ -1,9 +1,22 @@
 const tableBody = document.querySelector("#tableBody");
+const manageProductsBtn=document.querySelector("#manageProductsBtn");
+const addNewOrderBtn=document.querySelector("#addNewOrderBtn");
+const grandTotal=document.querySelector("#grandTotal");
+
 document.addEventListener("DOMContentLoaded",async()=>{
     await fetchOrders();
     fetchTotal();
 });
-const grandTotal=document.querySelector("#grandTotal");
+
+manageProductsBtn.addEventListener("click",async()=>{
+    window.location.href="http://127.0.0.1:5500/templates/products.html";
+});
+
+
+addNewOrderBtn.addEventListener("click", async() => {
+    window.location.href = "http://127.0.0.1:5500/templates/add_order.html";
+});
+
 
 async function fetchOrders() {
     try{const res=await fetch("http://127.0.0.1:5000/api/list_orders",{

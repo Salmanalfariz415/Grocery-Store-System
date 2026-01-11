@@ -6,13 +6,13 @@
     <title>View Orders</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-blue-500 flex flex-col justify-start items-center">
-    <div class="w-[50rem] h-auto bg-white mt-4 mb-4 px-3 py-4">
+<body class="bg-blue-300 flex flex-col justify-start items-center">
+    <div class="w-[50rem] h-auto bg-white mt-4 mb-4 px-3 py-4 shadow-lg rounded-md">
         <h1 class="font-bold text-xl text-gray-800 ">Orders List</h1>
         <hr class="border-gray-400 mt-2">
         <div class="flex justify-end items-center mt-2 mb-2">
-            <button class="w-32 h-8 flex justify-center items-center text-sm border border-gray-400 bg-green-500 font-bold text-white mx-4">Manage Products</button>
-            <button class="w-32 h-8 flex justify-center items-center text-sm border border-gray-400 bg-green-500 font-bold text-white">Add New Order</button>
+            <button id="manageProductsBtn" class="w-32 h-8 flex justify-center items-center text-sm border border-gray-400 bg-[#003459] font-bold text-white mx-4">Manage Products</button>
+            <button id="addNewOrderBtn" class="w-32 h-8 flex justify-center items-center text-sm border border-gray-400 bg-[#003459] font-bold text-white">Add New Order</button>
         </div>
         <table class="w-full border table-fixed mt-4">
 
@@ -31,6 +31,7 @@
             <h3 class="font-medium text-gray-700 text-sm mr-4 mt-4">Total Orders:</h3>
             <input type="text" readonly id="grandTotal" class="mt-4 w-36 h-8 flex border border-black rounded-sm justify-center items-center text-sm font-medium text-gray-700 text-center"></input>
         </div>
+    </div>
     <script src="../static/js/list.js" defer></script>
 </body>
 </html> 

@@ -7,6 +7,8 @@ const total_price=document.getElementsByClassName('total_price');
 const quantity=document.getElementsByClassName('quantity');
 const total_order=document.getElementById('total_order');
 const submit=document.getElementById('submit');
+const manageProductsBtn=document.querySelector("#manageProductsBtn");
+const listOrderBtn=document.querySelector("#listOrderBtn");
 //this is to cache products...so that we don't have to fetch from backend every time
 let productsCache = [];
 
@@ -15,8 +17,13 @@ document.addEventListener("DOMContentLoaded",()=>{
     fetchProducts();
     updateTotalOrderPrice();
 });
+listOrderBtn.addEventListener("click",async()=>{
+    window.location.href="http://127.0.0.1:5500/templates/list_orders.html";
+});
 
-
+manageProductsBtn.addEventListener("click",async()=>{
+    window.location.href="http://127.0.0.1:5500/templates/products.html";
+});
 
 add_more_btn.addEventListener("click",()=>{
     //insertAdjacentHTML is used to insert HTML code into a specified position in the DOM without overwriting existing content.(Better than innerHTML)
