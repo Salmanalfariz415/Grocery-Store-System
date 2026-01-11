@@ -49,3 +49,22 @@ def post_order_details(connection,orders):
         return cursor.lastrowid
     finally:
         cursor.close()
+
+def list_orders(connection):
+    cursor=connection.cursor()
+    try:
+        query="SELECT order_id,customer_name,total,datetime FROM orders"
+        cursor.execute(query)
+        orders=cursor.fetchall()
+        order_list=[]
+        for o in orders:
+            order={
+                "order_id":o[0],
+                "customer_name":o[1],
+                "total":o[2],
+                "date":o[3].strftime('%Y-%m-%d %H:%M:%S')
+            }
+            order_list.append(order)
+        return order_list
+    finally:
+        cursor.close()

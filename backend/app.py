@@ -186,7 +186,18 @@ def post_order_details():
         if connection:
             connection.close()
 
+@app.route('/api/list_orders', methods=['GET'])
+def list_orders():
+    try:
+        connection=get_sql_connection()
+        orders=orders_dao.list_orders(connection)
+        return jsonify(orders)
 
+    except Exception as e:
+        print("=== ERROR in list_orders ===")
+    finally:
+        if connection:
+            connection.close()
 
 if __name__ == "__main__":
     print("Starting Flask server...")
